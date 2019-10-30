@@ -9,9 +9,10 @@ class SongList extends Component {
         await axios.delete(BACKEND_URL + `del/${id}`)
         this.props.getTransactions()
     }
+    
 
     render() {
-        const { songList, sortBy } = this.props
+        const { songList } = this.props
         let sList = (<></>)
         //onClick={this.onDeleteClick.bind(this, item[0])}
 

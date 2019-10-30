@@ -1,13 +1,23 @@
 import React, { Component } from 'react'
+import { SHOW_ALL } from '../../config'
 import uuid from 'uuid'
 
 
 class Filters extends Component {
+
+    uniq = (a) =>  {
+        let seen = {};
+        return a.filter(function (item) {
+            return seen.hasOwnProperty(item) ? false : (seen[item] = true)
+        })
+    }
+
     render() {
         const { songsList, onChange, filterArtistName, filterGenre, filterYear } = this.props
-        let fArtist = []
-        let fGenre = []
-        let fYear = []
+        
+        let fArtist = [SHOW_ALL]
+        let fGenre = [SHOW_ALL]
+        let fYear = [SHOW_ALL]
         let forRender = (<></>)
         if (songsList.length > 0) {
             for (let i = 0; i < songsList.length; i++) {
@@ -15,6 +25,11 @@ class Filters extends Component {
                 fGenre.push(songsList[i][2])
                 fYear.push(songsList[i][3])
             }
+            fArtist = this.uniq(fArtist)
+            fGenre = this.uniq(fGenre)
+            fYear = this.uniq(fYear)
+            fArtist.pu
+
             forRender = (<>
                 <div>
                     <div style={{ marginBottom: 25 }} className="input-group">

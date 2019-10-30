@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { BACKEND_URL } from '../config'
+import { BACKEND_URL, SHOW_ALL } from '../config'
 import { connect } from 'react-redux'
-import { getSongs } from '../actions/songs/action'
+import { getSongs, setFilterArtist, setFilterGenre, setFilterYear } from '../actions/songs/action'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import SongList from "./layout/songlist"
@@ -28,13 +28,7 @@ class Mainpage extends Component {
     }
 
     async componentDidMount() {
-        const { currList } = this.props
         await this.props.getSongs()
-        if (currList.length > 0) {
-            this.setState({ filterArtistName: currList[0][1] })
-            this.setState({ filterGenre: currList[0][2] })
-            this.setState({ filterYear: currList[0][3] })
-        }
     }
 
     onPlusMinusClick = e => {
@@ -44,14 +38,50 @@ class Mainpage extends Component {
 
 
     onChange = e => this.setState({ [e.target.name]: e.target.value })
+
+    onChangeFilter = e => {
+        e.preventDefault()
+        const { setFilterArtist, setFilterGenre, setFilterYear} = this.props        
+        let filterArtistName = ""
+        let filterGenre = ""
+        let filterYear = 0
+        if (e.target.name === "filterArtistName") {
+            filterArtistName = e.target.value
+        }
+        if (e.target.name === "filterGenre") {
+            filterGenre = e.target.value
+        }
+        if (e.target.name === "filterYear") {
+            filterYear = e.target.value
+        }                
+        if (filterArtistName.length > 0)  {
+            setFilterArtist(filterArtistName)
+        }
+        if (filterGenre.length > 0)  {
+            setFilterGenre(filterGenre)
+        }
+        if ( (filterYear > 0) || ("" + filterYear === SHOW_ALL) ) {
+            setFilterYear(filterYear)
+        }
+        this.setState({ [e.target.name]: e.target.value })
+    }
     
     addSong = async (newSong) => {
-        console.log("BACKEND_URL +", BACKEND_URL + 'create')
-        console.log("newSong", newSong)
+        const { filterArtistName, filterGenre, filterYear } = this.state
+        const { setFilterArtist, setFilterGenre, setFilterYear} = this.props        
+
         let res = await axios.post(BACKEND_URL + 'create', newSong)
             .catch(err => { console.log("error creating new newSong, Action : ", err) })
         this.props.getSongs()
-        console.log("res", res.data)
+        if (filterArtistName.length > 0)  {
+            setFilterArtist(filterArtistName)
+        }
+        if (filterGenre.length > 0)  {
+            setFilterGenre(filterGenre)
+        }
+        if ( (filterYear > 0) || ("" + filterYear === SHOW_ALL) ) {
+            setFilterYear(filterYear)
+        }                                
         return res.data
     }
 
@@ -70,10 +100,13 @@ class Mainpage extends Component {
             contents : fContent
         }
         let res = await this.addSong(Song)
+        .then (res => {
+            this.setState({fArtist : "", fGenre : "", fYear : "", fTitle : "", fDurMin : "", fDurSec : "", fContent : ""})
+        })
     }
     
     render() {
-        const { currList } = this.props
+        const { currList, filteredList } = this.props
         const { filterArtistName, filterGenre, filterYear, addExpended, fArtist, fGenre, fYear, fTitle, fDurMin, fDurSec, fContent } = this.state
 
         let leftCol, rightCol, addForm
@@ -83,14 +116,14 @@ class Mainpage extends Component {
         } else {
             addForm = (<></>)
         }
-
+        
 
         leftCol = (<>
-            <SongList songList={currList} sortBy="0" />
+            <SongList songList={filteredList} />
         </>)
 
         rightCol = (<>
-            <Filters onChange={this.onChange} songsList={currList} filterArtistName={filterArtistName} filterGenre={filterGenre} filterYear={filterYear} />
+            <Filters onChange={this.onChangeFilter} songsList={filteredList} filterArtistName={filterArtistName} filterGenre={filterGenre} filterYear={filterYear} />
             <br/>
             <PlusMinus expended={addExpended} onPlusMinusClick={this.onPlusMinusClick} />
             {addForm}
@@ -109,9 +142,10 @@ class Mainpage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    currList: state.songs.currList
+    currList: state.songs.currList,
+    filteredList: state.songs.filteredList
 })
 
-export default connect(mapStateToProps, { getSongs })(Mainpage)
+export default connect(mapStateToProps, { getSongs, setFilterArtist, setFilterGenre, setFilterYear})(Mainpage)
 
 
