@@ -94,7 +94,7 @@ class AddSong extends Component {
             <Row>
                 <Col sm={{ span: 10, offset: 1 }}>
                     <div style={{ marginBottom: 5 }} className="input-group">
-                        <input type="text" className="Contens" onChange={onChangeCB} name="fContent" value={fContent} placeholder="text" />
+                        <textarea rows="50" cols="30" type="text" className="Contens" onChange={onChangeCB} name="fContent" value={fContent} placeholder="text" />
                     </div>
                 </Col>
             </Row>

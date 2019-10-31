@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Redirect } from "react-router-dom"
 import { BACKEND_URL, SHOW_ALL } from '../config'
 import { connect } from 'react-redux'
 import { getSongs, setFilterArtist, setFilterGenre, setFilterYear } from '../actions/songs/action'
@@ -8,8 +9,9 @@ import SongList from "./layout/songlist"
 import Filters from "./layout/filters"
 import PlusMinus from "./layout/plusminus"
 import AddSong from "./layout/addsong"
-const axios = require('axios')
 import "./mainpage.css"
+const axios = require('axios')
+
 
 class Mainpage extends Component {
 
@@ -24,7 +26,9 @@ class Mainpage extends Component {
         fTitle: "",
         fDurMin: "",
         fDurSec: "",
-        fContent: ""
+        fContent: "",
+        redirectEdit: false,
+        notification: "yytyt"
     }
 
     async componentDidMount() {
@@ -73,15 +77,7 @@ class Mainpage extends Component {
         let res = await axios.post(BACKEND_URL + 'create', newSong)
             .catch(err => { console.log("error creating new newSong, Action : ", err) })
         this.props.getSongs()
-        if (filterArtistName.length > 0)  {
-            setFilterArtist(filterArtistName)
-        }
-        if (filterGenre.length > 0)  {
-            setFilterGenre(filterGenre)
-        }
-        if ( (filterYear > 0) || ("" + filterYear === SHOW_ALL) ) {
-            setFilterYear(filterYear)
-        }                                
+
         return res.data
     }
 
@@ -107,7 +103,22 @@ class Mainpage extends Component {
     
     render() {
         const { currList, filteredList } = this.props
-        const { filterArtistName, filterGenre, filterYear, addExpended, fArtist, fGenre, fYear, fTitle, fDurMin, fDurSec, fContent } = this.state
+        const { filterArtistName, filterGenre, filterYear, addExpended, fArtist, fGenre, fYear, fTitle, fDurMin, fDurSec, fContent, redirectEdit, notification } = this.state
+        if (this.state.redirectEdit) {
+            return <Redirect to={{
+              pathname: '/editsong',
+              state: {
+                fArtist : fArtist,
+                fGenre : fGenre,
+                fYear : fYear,
+                fTitle : fTitle,
+                fDurMin : fDurMin,
+                fDurSec : fDurSec,
+                fContent: fContent
+              }
+            }}
+            />
+          }
 
         let leftCol, rightCol, addForm
         if (addExpended) {
@@ -127,6 +138,7 @@ class Mainpage extends Component {
             <br/>
             <PlusMinus expended={addExpended} onPlusMinusClick={this.onPlusMinusClick} />
             {addForm}
+            {notification}
         </>)
 
 
