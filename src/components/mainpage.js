@@ -27,8 +27,7 @@ class Mainpage extends Component {
         fDurMin: "",
         fDurSec: "",
         fContent: "",
-        redirectEdit: false,
-        notification: "yytyt"
+        notification: "Notifications"
     }
 
     async componentDidMount() {
@@ -97,28 +96,14 @@ class Mainpage extends Component {
         }
         let res = await this.addSong(Song)
         .then (res => {
+            this.setState({notification: `The song "${fTitle}" (${fArtist}) was successfully added`})
             this.setState({fArtist : "", fGenre : "", fYear : "", fTitle : "", fDurMin : "", fDurSec : "", fContent : ""})
         })
     }
     
     render() {
-        const { currList, filteredList } = this.props
+        const { filteredList } = this.props
         const { filterArtistName, filterGenre, filterYear, addExpended, fArtist, fGenre, fYear, fTitle, fDurMin, fDurSec, fContent, redirectEdit, notification } = this.state
-        if (this.state.redirectEdit) {
-            return <Redirect to={{
-              pathname: '/editsong',
-              state: {
-                fArtist : fArtist,
-                fGenre : fGenre,
-                fYear : fYear,
-                fTitle : fTitle,
-                fDurMin : fDurMin,
-                fDurSec : fDurSec,
-                fContent: fContent
-              }
-            }}
-            />
-          }
 
         let leftCol, rightCol, addForm
         if (addExpended) {
@@ -130,15 +115,18 @@ class Mainpage extends Component {
         
 
         leftCol = (<>
+        <br/>
             <SongList songList={filteredList} />
         </>)
 
         rightCol = (<>
             <Filters onChange={this.onChangeFilter} songsList={filteredList} filterArtistName={filterArtistName} filterGenre={filterGenre} filterYear={filterYear} />
             <br/>
+            <div className="notify">{notification}</div>
+            <br/><br/>
             <PlusMinus expended={addExpended} onPlusMinusClick={this.onPlusMinusClick} />
             {addForm}
-            {notification}
+
         </>)
 
 
@@ -154,7 +142,6 @@ class Mainpage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    currList: state.songs.currList,
     filteredList: state.songs.filteredList
 })
 

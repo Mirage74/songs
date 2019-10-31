@@ -1,16 +1,15 @@
 .row-custom {
     border: solid 1px #DCDCDC;
     border-radius: 10px;
+    overflow: hidden    
 }
 
 .row-custom-dark {
     background: #DCDCDC;
     border: solid 0px #DCDCDC;
-    border-radius: 10px;    
+    
 }
-.input-content {
-    width: 80%; 
-    height: 10rem;
-    display : inline;
+.notify {
+    border: solid 1px #00FF00 ;
 }
 

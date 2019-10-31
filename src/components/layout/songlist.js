@@ -25,11 +25,11 @@ class SongList extends Component {
                 <div key={uuid()}>
 
                     <Row className="row-custom" >
-                        <Row style={{ width: "100%" }}>
+                        <Row style={{ width: "100%", marginLeft: "0px"}}>
                             <Col sm={{ span: 9, offset: 0 }} >
                                 {item[4]} | {item[3]}
                             </Col>
-                            <Col sm={{ span: 1, offset: 0 }} >
+                            <Col sm={{ span: 1, offset: 0 }} className="text-right" >
                                 {item[5]}:{item[6]}
                             </Col>
                             <Col sm={{ span: 2, offset: 0 }} className="text-right" >
@@ -48,16 +48,17 @@ class SongList extends Component {
                                     />
                                 </Link>
                             </Col>
-                        </Row >
-                        <Row style={{ width: "100%" }}>
+                        </Row>
+                        <br/><br/>
+                        <Row style={{ width: "100%", marginLeft: "0px" }} className="row-custom-dark" >
                             <Col>
                                 <div >
                                     <Row style={{ width: "100%" }}>
                                         <Col sm={{ span: 2, offset: 0 }} >
-                                            {item[1]}
+                                            <b>{item[1]}</b>
                                         </Col>
-                                        <Col sm={{ span: 2, offset: 8 }} >
-                                            {item[2]}
+                                        <Col sm={{ span: 2, offset: 8 }} className="text-right" >
+                                            <b>{item[2]}</b>
                                         </Col>
                                     </Row>
                                     <Row style={{ width: "100%" }}>
